@@ -2021,7 +2021,7 @@ void FileList::SetToolBarInfo(ToolBar *ToolBar, UINT idUndo, UINT idRedo)
 void FileList::ResetDirStack(void)
 {
 	_vDirStack.clear();
-	_itrPos = NULL;
+	_itrPos = _vDirStack.end();
 	UpdateToolBarElements();
 }
 
@@ -2037,7 +2037,7 @@ void FileList::PushDir(LPCTSTR pszPath)
 		tStaInfo	StackInfo;
 		StackInfo.strPath = pszPath;
 
-		if (_itrPos != NULL)
+		if (_itrPos != _vDirStack.end())
 		{
 			_vDirStack.erase(_itrPos + 1, _vDirStack.end());
 
@@ -2178,7 +2178,7 @@ void FileList::SetItems(vector<string> vStrItems)
 				}
 
 				/* delete last found item to be faster in compare */
-				vStrItems.erase(&vStrItems[itemPos]);
+				vStrItems.erase(vStrItems.begin() + itemPos);
 
 				/* if last item were delete return from function */
 				if (vStrItems.size() == 0)

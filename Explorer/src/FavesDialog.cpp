@@ -70,7 +70,7 @@ void FavesDialog::GetNameStrFromCmd(UINT resID, LPTSTR tip, UINT count)
 	}
 }
 
-
+static vector<TItemElement>::iterator HACK_from_pElem_to_iterator(vector<TItemElement>& vElements, PELEM pElem);
 
 
 
@@ -710,7 +710,7 @@ void FavesDialog::PasteItem(HTREEITEM hItem)
 
 			delete [] pElemCC->pszName;
 			delete [] pElemCC->pszLink;
-			pParentElem->vElements.erase(pElemCC);
+			pParentElem->vElements.erase(HACK_from_pElem_to_iterator(pParentElem->vElements, pElemCC));
 
 			/* update information and delete element */
 			UpdateLink(hParentItem);
@@ -1170,7 +1170,8 @@ void FavesDialog::DeleteItem(HTREEITEM hItem)
 	{
 		/* delete child elements */
 		DeleteRecursive(pElem);
-		((PELEM)GetParam(hItemParent))->vElements.erase(pElem);
+		((PELEM)GetParam(hItemParent))->vElements.erase(
+			HACK_from_pElem_to_iterator(((PELEM)GetParam(hItemParent))->vElements, pElem));
 
 		/* update information and delete element */
 		TreeView_DeleteItem(_hTreeCtrl, hItem);
@@ -1958,7 +1959,7 @@ void FavesDialog::ReadSettings(void)
 						}
 
 						/* now read the information */
-						ReadElementTreeRecursive(&_vDB[i], &ptr);
+						ReadElementTreeRecursive(_vDB.begin() + i, &ptr);
 					}
 #ifdef UNICODE
 				}
@@ -2173,3 +2174,8 @@ void FavesDialog::SaveElementTreeRecursive(PELEM pElem, HANDLE hFile)
 	}
 }
 
+vector<TItemElement>::iterator HACK_from_pElem_to_iterator(vector<TItemElement>& vElements, PELEM pElem)
+{
+	auto it = vElements.begin() + (pElem - &(*vElements.begin())) / sizeof(TItemElement);
+	return it;
+}

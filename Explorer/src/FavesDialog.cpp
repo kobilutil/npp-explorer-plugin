@@ -1801,7 +1801,7 @@ void FavesDialog::SortElementList(vector<tItemElement> & elementList)
 	{
 		*itr = groupList[i];
 	}
-	for (i = 0; i < sizeOfLink; i++, itr++)
+	for (UINT i = 0; i < sizeOfLink; i++, itr++)
 	{
 		*itr = linkList[i];
 	}
@@ -1933,7 +1933,7 @@ void FavesDialog::ReadSettings(void)
 #endif
 
 					/* finaly, fill out the tree and the vDB */
-					for (i = 0; i < FAVES_ITEM_MAX; i++)
+					for (int i = 0; i < FAVES_ITEM_MAX; i++)
 					{
 						/* error */
 						if (ptr == NULL)
@@ -2079,7 +2079,7 @@ void FavesDialog::SaveSettings(void)
 	HANDLE			hFile			= NULL;
 
 #ifdef UNICODE
-	CHAR			szBOM[]			= {0xFF, 0xFE};
+	BYTE			szBOM[]			= {0xFF, 0xFE};
 #endif
 
 	_tcscpy(saveFilePath, configPath);

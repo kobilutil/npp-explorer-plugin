@@ -601,7 +601,7 @@ BOOL FileList::notify(WPARAM wParam, LPARAM lParam)
 				UpdateList();
 
 				/* mark old items */
-				for (i = 0; i < _uMaxElements; i++) {
+				for (UINT i = 0; i < _uMaxElements; i++) {
 					ListView_SetItemState(_hSelf, i, _vFileList[i].state, 0xFF);
 				}
 				break;
@@ -2021,7 +2021,7 @@ void FileList::SetToolBarInfo(ToolBar *ToolBar, UINT idUndo, UINT idRedo)
 void FileList::ResetDirStack(void)
 {
 	_vDirStack.clear();
-	_itrPos	= NULL;
+	_itrPos = NULL;
 	UpdateToolBarElements();
 }
 
@@ -2237,7 +2237,7 @@ void FileList::FolderExChange(CIDropSource* pdsrc, CIDataObject* pdobj, UINT dwE
 	/* add files to payload and seperate with "\0" */
 	UINT	offset	= 0;
 	LPTSTR	szPath	= (LPTSTR)&lpDropFileStruct[1];
-	for (i = 0; i < _uMaxElements; i++)
+	for (UINT i = 0; i < _uMaxElements; i++)
 	{
 		if (ListView_GetItemState(_hSelf, i, LVIS_SELECTED) == LVIS_SELECTED)
 		{

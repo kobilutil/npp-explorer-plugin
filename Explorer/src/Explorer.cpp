@@ -291,6 +291,10 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 			explorerDlg.initFinish();
 			isNotepadCreated = TRUE;
 		}
+		if (notifyCode->nmhdr.code == NPPN_WORDSTYLESUPDATED)
+		{
+			explorerDlg.UpdateColors();
+		}
 	}
 }
 

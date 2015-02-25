@@ -88,9 +88,12 @@ public:
 	void initFinish(void) {
 		_bStartupFinish = TRUE;
 		::SendMessage(_hSelf, WM_SIZE, 0, 0);
+		UpdateColors();
 	};
 
 	void NotifyEvent(DWORD event);
+
+	void UpdateColors();
 
 public:
 	virtual bool OnDrop(FORMATETC* pFmtEtc, STGMEDIUM& medium, DWORD *pdwEffect);

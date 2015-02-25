@@ -689,6 +689,9 @@ BOOL FileList::notify(WPARAM wParam, LPARAM lParam)
 							((lpCD->iSubItem > 0) && (_pExProp->bAddExtToName == FALSE)))
 							return FALSE;
 
+						auto bgColor = ListView_GetBkColor(_hSelf);
+						auto fgColor = ListView_GetTextColor(_hSelf);
+
 						UINT	iItem		= (UINT)lpCD->nmcd.dwItemSpec;
 						RECT	rc			= {0};
 						RECT	rcDc		= {0};
@@ -716,7 +719,7 @@ BOOL FileList::notify(WPARAM wParam, LPARAM lParam)
 							::DeleteObject(hBrush);
 							hBrush = NULL;
 						} else {
-							hBrush = ::CreateSolidBrush(::GetSysColor(COLOR_WINDOW));
+							hBrush = ::CreateSolidBrush(bgColor);
 							::FillRect(hMemDc, &rc, hBrush);
 						}
 
@@ -749,10 +752,11 @@ BOOL FileList::notify(WPARAM wParam, LPARAM lParam)
 						}
 
 						/* set font color */
-						if (isSel == TRUE)
-							::SetTextColor(hMemDc, ::GetSysColor(COLOR_WINDOW));
+						if (state & (LVIS_SELECTED | LVIS_DROPHILITED)) {
+							::SetTextColor(hMemDc, ::GetSysColor(isSel ? COLOR_HIGHLIGHTTEXT : COLOR_BTNTEXT));
+						}
 						else
-							::SetTextColor(hMemDc, ::GetSysColor(COLOR_BTNTEXT));
+							::SetTextColor(hMemDc, fgColor);
 
 						/* draw text to memory */
 						::DrawText(hMemDc, text, _tcslen(text), &rcName, DT_LEFT | DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS | DT_NOPREFIX);

@@ -2019,25 +2019,8 @@ bool ExplorerDialog::doPaste(LPCTSTR pszTo, LPDROPFILES hData, const DWORD & dwE
 
 void ExplorerDialog::UpdateColors()
 {
-	// i though this should have work but it doesn't
-	//COLORREF bgColor = ::SendMessage(_nppData._nppHandle, NPPM_GETEDITORDEFAULTBACKGROUNDCOLOR, 0, 0);
-	//COLORREF fgColor = ::SendMessage(_nppData._nppHandle, NPPM_GETEDITORDEFAULTFOREGROUNDCOLOR, 0, 0);
-
-	// get the bgcolor directly from scintilla.
-	// note that we assume that the bgcolor of style=0 if the default bgcolor of the document.
-	COLORREF bgColor = ::SendMessage(_nppData._scintillaMainHandle, SCI_STYLEGETBACK, 0, 0);
-
-	// try to estimate if the bgColor is light or dark
-	int h = 0;
-	if (GetRValue(bgColor) >= 128) ++h;
-	if (GetGValue(bgColor) >= 128) ++h;
-	if (GetBValue(bgColor) >= 128) ++h;
-
-	// if bgColor is light then pick a dark fgColor and vice versa
-	COLORREF fgColor = (h > 1) ? RGB(30, 30, 30) : RGB(200, 200, 200);
-
-	bgColor = ::SendMessage(_nppData._nppHandle, NPPM_GETEDITORDEFAULTBACKGROUNDCOLOR, 0, 0);
-	fgColor = ::SendMessage(_nppData._nppHandle, NPPM_GETEDITORDEFAULTFOREGROUNDCOLOR, 0, 0);
+	auto bgColor = (COLORREF)::SendMessage(_nppData._nppHandle, NPPM_GETEDITORDEFAULTBACKGROUNDCOLOR, 0, 0);
+	auto fgColor = (COLORREF)::SendMessage(_nppData._nppHandle, NPPM_GETEDITORDEFAULTFOREGROUNDCOLOR, 0, 0);
 
 	TreeView_SetBkColor(_hTreeCtrl, bgColor);
 	TreeView_SetTextColor(_hTreeCtrl, fgColor);

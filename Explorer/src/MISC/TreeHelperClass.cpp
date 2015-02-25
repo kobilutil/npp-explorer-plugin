@@ -25,6 +25,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 extern winVer	gWinVersion;
 
 
+// a simple printf style wrapper for OutputDebugString
+void debug_print(char const* format, ...)
+{
+#ifdef _DEBUG
+	va_list args;
+	va_start(args, format);
+	char line[200];
+	vsprintf(line, format, args);
+	va_end(args);
+	::OutputDebugStringA(line);
+#endif
+}
+
 DWORD WINAPI TreeOverlayThread(LPVOID lpParam)
 {
 	TreeHelper	*pTree	= (TreeHelper*)lpParam;
@@ -50,14 +63,13 @@ void TreeHelper::UpdateOverlayIcon(void)
 		{
 			TREE_LOCK();
 
-			::OutputDebugString(_T("UpdateOverlayIcon() starts:\n"));
+			debug_print("UpdateOverlayIcon() starts:\n");
 
 			for (size_t i = 0; i < _vIconUpdate.size() ; i++)
 			{
 				HTREEITEM	hItem = TreeView_GetNextItem(_hTreeCtrl, _vIconUpdate[i].hLastItem, TVGN_CHILD);
 
-				::OutputDebugString(_vIconUpdate[i].strLastPath.c_str());
-				::OutputDebugString(_T("\n"));
+				debug_print("%S\n", _vIconUpdate[i].strLastPath.c_str());
 
 				while (hItem != NULL)
 				{
@@ -72,12 +84,11 @@ void TreeHelper::UpdateOverlayIcon(void)
 
 					hItem = TreeView_GetNextItem(_hTreeCtrl, hItem, TVGN_NEXT);
 
-					::OutputDebugString(TEMP);
-					::OutputDebugString(_T("\n"));
+					debug_print("%S\n", TEMP);
 				}
 			}
 
-			::OutputDebugString(_T("UpdateOverlayIcon() ends:\n"));
+			debug_print("UpdateOverlayIcon() ends:\n");
 
 			_vIconUpdate.clear();
 
@@ -85,7 +96,7 @@ void TreeHelper::UpdateOverlayIcon(void)
 		}
 		else if (dwID == ICON_UPDATE_EVT_END)
 		{
-			::OutputDebugString(_T("Thread ended\n"));
+			debug_print("Thread ended\n");
 			::SetEvent(_hEvent[ICON_UPDATE_EVT_RESP]);
 			return;
 		}
@@ -118,7 +129,7 @@ void TreeHelper::DrawChildren(HTREEITEM parentItem)
 	/* if not found -> exit */
 	if (hFind != INVALID_HANDLE_VALUE)
 	{
-		::OutputDebugString(_T("DrawChildren() starts:\n"));
+		debug_print("DrawChildren() starts:\n");
 		do
 		{
 			if (IsValidFolder(Find) == TRUE)
@@ -140,19 +151,17 @@ void TreeHelper::DrawChildren(HTREEITEM parentItem)
 		}
 
 		TREE_LOCK();
-		::OutputDebugString(_T("Add "));
-		::OutputDebugString(parentFolderPathName);
-		::OutputDebugString(_T("\n"));
+		debug_print("Add %S\n", parentFolderPathName);
 		iconUpdateData.hLastItem	= parentItem;
 		iconUpdateData.strLastPath	= parentFolderPathName;
 		_vIconUpdate.push_back(iconUpdateData);
-		::OutputDebugString(_T("Unlock\n"));
+		debug_print("Unlock\n");
 		TREE_UNLOCK();
 
 		if ((_hSemaphore) && (parentItem != TVI_ROOT)) {
 			::SetEvent(_hEvent[ICON_UPDATE_EVT_START]);
 		}
-		::OutputDebugString(_T("DrawChildren() ends:\n"));
+		debug_print("DrawChildren() ends:\n");
 	}
 }
 
@@ -181,7 +190,7 @@ void TreeHelper::UpdateChildren(LPTSTR pszParentPath, HTREEITEM hParentItem, BOO
 	TCHAR				pszSearch[MAX_PATH];
 	HTREEITEM			hCurrentItem	= TreeView_GetNextItem(_hTreeCtrl, hParentItem, TVGN_CHILD);
 
-	::OutputDebugString(_T("UpdateChildren() starts:\n"));
+	debug_print("UpdateChildren() starts:\n");
 
 	/* remove possible backslash */
 	if (pszParentPath[_tcslen(pszParentPath)-1] == '\\')
@@ -196,13 +205,11 @@ void TreeHelper::UpdateChildren(LPTSTR pszParentPath, HTREEITEM hParentItem, BOO
 	if ((hFind = ::FindFirstFile(pszSearch, &Find)) != INVALID_HANDLE_VALUE)
 	{
 		TREE_LOCK();
-		::OutputDebugString(_T("Add "));
-		::OutputDebugString(pszParentPath);
-		::OutputDebugString(_T("\n"));
+		debug_print("Add %S\n", pszParentPath);
 		iconUpdateData.hLastItem	= hParentItem;
 		iconUpdateData.strLastPath	= pszParentPath;
 		_vIconUpdate.push_back(iconUpdateData);
-		::OutputDebugString(_T("Unlock\n"));
+		debug_print("Unlock\n");
 		TREE_UNLOCK();
 
 		/* find folders */
@@ -278,12 +285,9 @@ void TreeHelper::UpdateChildren(LPTSTR pszParentPath, HTREEITEM hParentItem, BOO
 				/* update recursive */
 				if ((doRecursive) && IsItemExpanded(hCurrentItem))
 				{
-					::OutputDebugString(_T("Go into: "));
-					::OutputDebugString(pszPath);
-					::OutputDebugString(_T("\n"));
+					debug_print("Go into: %S\n", pszPath);
 					UpdateChildren(pszPath, hCurrentItem);
-					::OutputDebugString(pszPath);
-					::OutputDebugString(_T("\n"));
+					debug_print("%S\n", pszPath);
 				}
 
 				/* select next item */
@@ -309,7 +313,7 @@ void TreeHelper::UpdateChildren(LPTSTR pszParentPath, HTREEITEM hParentItem, BOO
 		}
 	}
 	vFolderList.clear();
-	::OutputDebugString(_T("UpdateChildren() ends:\n"));
+	debug_print("UpdateChildren() ends:\n");
 }
 
 BOOL TreeHelper::FindFolderAfter(LPTSTR itemName, HTREEITEM pAfterItem)

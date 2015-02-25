@@ -29,7 +29,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "SysMsg.h"
 #include <stdlib.h>
 #include <iostream>
-#include <fstream>
+// TODO: investigate why this include cause double definition error
+//#include <fstream>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <shlobj.h>

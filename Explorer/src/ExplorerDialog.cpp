@@ -383,7 +383,7 @@ BOOL CALLBACK ExplorerDialog::run_dlgProc(HWND hWnd, UINT Message, WPARAM wParam
 
 				TCHAR	tip[MAX_PATH];
 				GetNameStrFromCmd(resId, tip, sizeof(tip));
-				lpttt->lpszText = tip;
+				lstrcpy(lpttt->lpszText, tip);
 				return TRUE;
 			}
 

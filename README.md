@@ -5,6 +5,11 @@ The goal was:
 - to fix an annoying bug that caused the toolbar's tooltip of the plugin to display garbage text.
 - make the fg/bg colors of the listview and the treeview in the plugin to always match the current Notepad++ theme.
 
+## Installation
+For now you can just drop the **Explorer.dll** into NPP's plugins folder -
+
+`C:\Program Files (x86)\Notepad++\plugins`
+
 ## Screenshot
 ![screenshot]
 

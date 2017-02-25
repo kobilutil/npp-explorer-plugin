@@ -844,7 +844,7 @@ void ExtractIcons(LPCTSTR currentPath, LPCTSTR volumeName, eDevType type,
 			::DestroyIcon(sfi.hIcon);
 		}
 
-		*piIconNormal	= sfi.iIcon;
+		*piIconNormal	= sfi.iIcon & 0x00ffffff;
 		if (piIconOverlayed != NULL)
 			*piIconOverlayed = sfi.iIcon >> 24;
 
